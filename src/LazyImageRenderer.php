@@ -37,14 +37,21 @@ class LazyImageRenderer implements NodeRendererInterface
         $stripSrc = $this->config->get('lazy_image/strip_src');
         $dataAttribute = $this->config->get('lazy_image/data_attribute');
         $htmlClass = $this->config->get('lazy_image/html_class');
+        $proxy = $this->config->get('lazy_image/proxy');
 
         $this->baseImageRenderer->setConfiguration($this->config);
         $htmlElement = $this->baseImageRenderer->render($node, $childRenderer);
 
         $htmlElement->setAttribute('loading', 'lazy');
 
+        $src = $htmlElement->getAttribute('src');
+
+        if($proxy) {
+            $src = $proxy . urlencode($src);
+        }
+
         if ($dataAttribute) {
-            $htmlElement->setAttribute("data-$dataAttribute", $htmlElement->getAttribute('src'));
+            $htmlElement->setAttribute("data-$dataAttribute", $src);
         }
 
         if ($htmlClass) {
@@ -59,6 +66,8 @@ class LazyImageRenderer implements NodeRendererInterface
 
         if ($stripSrc) {
             $htmlElement->setAttribute('src', '');
+        } else {
+            $htmlElement->setAttribute('src', $src);
         }
 
         return $htmlElement;

@@ -16,7 +16,8 @@ class LazyImageExtension implements ConfigurableExtensionInterface
         $builder->addSchema('lazy_image', Expect::structure([
             'strip_src' => Expect::bool(false),
             'data_attribute' => Expect::string(''),
-            'html_class' => Expect::string('')
+            'html_class' => Expect::string(''),
+            'proxy' => Expect::string('')
         ]));
     }
 

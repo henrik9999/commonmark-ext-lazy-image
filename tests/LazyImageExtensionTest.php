@@ -91,4 +91,27 @@ class LazyImageExtensionTest extends TestCase
         $html = $converter->convertToHtml('![alt text](/path/to/image.jpg)');
         $this->assertStringContainsString('<img src="" alt="alt text" loading="lazy" />', $html);
     }
+
+    public function testProxyWithDefaultLazyLoad(): void {
+        $converter = $this->getConverter([
+            'lazy_image' => ['proxy' => "https://proxy.test?url="]
+        ]);
+
+        $html = $converter->convertToHtml('![alt text](https://random.url/path/to/image.jpg)');
+        $this->assertStringContainsString('<img src="https://proxy.test?url=https%3A%2F%2Frandom.url%2Fpath%2Fto%2Fimage.jpg" alt="alt text" loading="lazy" />', $html);
+    }
+
+    public function testProxyWithCustomLazyLoad(): void {
+        $converter = $this->getConverter([
+            'lazy_image' => [
+                'proxy' => "https://proxy.test?url=",
+                'strip_src' => true,
+                'html_class' => 'lozad',
+                'data_attribute' => 'src',
+            ]
+        ]);
+
+        $html = $converter->convertToHtml('![alt text](https://random.url/path/to/image.jpg)');
+        $this->assertStringContainsString('src="" alt="alt text" loading="lazy" data-src="https://proxy.test?url=https%3A%2F%2Frandom.url%2Fpath%2Fto%2Fimage.jpg" class="lozad"', $html);
+    }
 }
