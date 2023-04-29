@@ -17,7 +17,8 @@ class LazyImageExtension implements ConfigurableExtensionInterface
             'strip_src' => Expect::bool(false),
             'data_attribute' => Expect::string(''),
             'html_class' => Expect::string(''),
-            'proxy' => Expect::string('')
+            'proxy' => Expect::string(''),
+            'proxy_excluded' => Expect::arrayOf('string')
         ]));
     }
 

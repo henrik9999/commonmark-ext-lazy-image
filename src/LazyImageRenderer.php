@@ -38,6 +38,7 @@ class LazyImageRenderer implements NodeRendererInterface
         $dataAttribute = $this->config->get('lazy_image/data_attribute');
         $htmlClass = $this->config->get('lazy_image/html_class');
         $proxy = $this->config->get('lazy_image/proxy');
+        $proxyExcluded = $this->config->get('lazy_image/proxy_excluded');
 
         $this->baseImageRenderer->setConfiguration($this->config);
         $htmlElement = $this->baseImageRenderer->render($node, $childRenderer);
@@ -47,7 +48,20 @@ class LazyImageRenderer implements NodeRendererInterface
         $src = $htmlElement->getAttribute('src');
 
         if($proxy) {
-            $src = $proxy . urlencode($src);
+            $exclude = false;
+
+            if($proxyExcluded) {
+                foreach ($proxyExcluded as $excluded) {
+                    if(str_starts_with($src, $excluded)) {
+                        $exclude = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!$exclude) {
+                $src = $proxy . urlencode($src);
+            }
         }
 
         if ($dataAttribute) {
